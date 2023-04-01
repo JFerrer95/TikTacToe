@@ -25,26 +25,53 @@ BORDER3 = pygame.Rect(0, (HEIGHT//3) * 2 - 5, WIDTH, 10)
 
 # MOVES
 FONT = pygame.font.SysFont('comicsans', 100)
+WINNER_FONT = pygame.font.SysFont('cosmicsans', 150)
 global moves
 moves = [1,2,3,4,5,6,7,8,9]
-global player
-player = 'X'
+global current_player
+current_player = 'X'
+
+def draw_winner(player):
+    text = f"Player {player} win's"
+    draw_text = WINNER_FONT.render(text, 1, RED)
+    WIN.blit(draw_text, (WIDTH/2 - draw_text.get_width()/2, HEIGHT/2 - draw_text.get_height()/2))
+    pygame.display.update()
+
+def check_win():
+    global moves
+    if (moves[0] == moves[1]) and (moves[1] == moves[2]):
+        draw_winner(moves[0])
+    if (moves[3] == moves[4]) and (moves[4] == moves[5]):
+        draw_winner(moves[3])
+    if (moves[6] == moves[7]) and (moves[7] == moves[8]):
+        draw_winner(moves[6])
+    if (moves[0] == moves[3]) and (moves[3] == moves[6]):
+        draw_winner(moves[0])
+    if (moves[1] == moves[4]) and (moves[4] == moves[7]):
+        draw_winner(moves[3])
+    if (moves[2] == moves[5]) and (moves[5] == moves[8]):
+        draw_winner(moves[6])
+    if (moves[0] == moves[4]) and (moves[4] == moves[8]):
+        draw_winner(moves[0])
+    if (moves[2] == moves[4]) and (moves[4] == moves[6]):
+        draw_winner(moves[3])
+
 
 def handle_input(key):
-    global player
+    global current_player
     global moves
     if (moves[(key - 1)] == 'X' or (moves[key-1] == 'O')):
         print("nah player: " + str(moves[key-1]) + " is already in sqaure: " + str(moves[key]))
         return
-    moves[(key - 1)] = player
+    moves[(key - 1)] = current_player
     draw_move(key)
-    if player == 'X':
-        player = 'O'
+    if current_player == 'X':
+        current_player = 'O'
     else:
-        player = 'X'
+        current_player = 'X'
 
 def draw_move(square):
-    draw_text = FONT.render(player, 1, WHITE)
+    draw_text = FONT.render(current_player, 1, WHITE)
     if square == 1:
         WIN.blit(draw_text, ((WIDTH/3)/2 - draw_text.get_width()/2, (HEIGHT/3)/2 - draw_text.get_height()/2))
     if square == 2:
@@ -110,6 +137,7 @@ def main():
                 key_pressed(event)
 
         draw_window()
+        check_win()
 
 
     main()
